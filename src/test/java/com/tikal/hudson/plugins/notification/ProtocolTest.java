@@ -216,7 +216,7 @@ public class ProtocolTest extends TestCase {
     assertTrue(requests.isEmpty());
 
     String uri = urlFactory.getUrl("/realpath");
-    Protocol.HTTP.send(uri, "Hello".getBytes(),30000, true);
+    Protocol.HTTP.send(uri, "Hello".getBytes(),30000, true, null);
 
     assertEquals(new Request(uri, "POST", "Hello"), requests.take());
     assertTrue(requests.isEmpty());
@@ -230,7 +230,7 @@ public class ProtocolTest extends TestCase {
     assertTrue(requests.isEmpty());
 
     String uri = urlFactory.getUrl("/realpath");
-    Protocol.HTTP.send(uri, "Hello".getBytes(),30000, true);
+    Protocol.HTTP.send(uri, "Hello".getBytes(),30000, true, "");
 
     Request theRequest = requests.take();
     assertTrue(requests.isEmpty());
@@ -248,7 +248,7 @@ public class ProtocolTest extends TestCase {
     assertTrue(requests.isEmpty());
 
     String uri = redirectorUrlFactory.getUrl("/path");
-    Protocol.HTTP.send(uri, "RedirectMe".getBytes(),30000, true);
+    Protocol.HTTP.send(uri, "RedirectMe".getBytes(),30000, true, "");
 
     assertEquals(new Request(uri, "POST", "RedirectMe"), requests.take());
     assertEquals(new Request(redirectUri, "POST", "RedirectMe"), requests.take());

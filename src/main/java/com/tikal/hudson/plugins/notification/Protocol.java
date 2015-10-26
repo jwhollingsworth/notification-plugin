@@ -34,7 +34,7 @@ public enum Protocol {
 
     UDP {
         @Override
-        protected void send(String url, byte[] data, int timeout, boolean isJson) throws IOException {
+        protected void send(String url, byte[] data, int timeout, boolean isJson, String authToken) throws IOException {
             HostnamePort hostnamePort = HostnamePort.parseUrl(url);
             DatagramSocket socket = new DatagramSocket();
             DatagramPacket packet = new DatagramPacket(data, data.length, InetAddress.getByName(hostnamePort.hostname), hostnamePort.port);
@@ -43,7 +43,7 @@ public enum Protocol {
     },
     TCP {
         @Override
-        protected void send(String url, byte[] data, int timeout, boolean isJson) throws IOException {
+        protected void send(String url, byte[] data, int timeout, boolean isJson, String authToken) throws IOException {
             HostnamePort hostnamePort = HostnamePort.parseUrl(url);
             SocketAddress endpoint = new InetSocketAddress(InetAddress.getByName(hostnamePort.hostname), hostnamePort.port);
             Socket socket = new Socket();
@@ -57,7 +57,7 @@ public enum Protocol {
     },
     HTTP {
         @Override
-        protected void send(String url, byte[] data, int timeout, boolean isJson) throws IOException {
+        protected void send(String url, byte[] data, int timeout, boolean isJson, String authToken) throws IOException {
             URL targetUrl = new URL(url);
             if (!targetUrl.getProtocol().startsWith("http")) {
               throw new IllegalArgumentException("Not an http(s) url: " + url);
@@ -90,6 +90,8 @@ public enum Protocol {
               String b64UserInfo = DatatypeConverter.printBase64Binary(userInfo.getBytes());
               String authorizationHeader = "Basic " + b64UserInfo;
               connection.setRequestProperty("Authorization", authorizationHeader);
+            } else if (authToken != null) {
+              connection.setRequestProperty("X-Auth-Token", authToken);
             }
             connection.setFixedLengthStreamingMode(data.length);
             connection.setDoInput(true);
@@ -115,7 +117,7 @@ public enum Protocol {
               if (307 == connection.getResponseCode()) {
                 String location = connection.getHeaderField("Location");
                 connection.disconnect();
-                send(location, data,timeout, isJson);
+                send(location, data,timeout, isJson, authToken);
               } else {
                 connection.disconnect();
               }
@@ -135,7 +137,7 @@ public enum Protocol {
     };
 
 
-    protected abstract void send(String url, byte[] data, int timeout, boolean isJson) throws IOException;
+    protected abstract void send(String url, byte[] data, int timeout, boolean isJson, String authToken) throws IOException;
 
     public void validateUrl(String url) {
         try {

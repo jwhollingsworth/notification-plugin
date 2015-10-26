@@ -36,11 +36,14 @@ public class Endpoint {
     private Integer timeout = DEFAULT_TIMEOUT;
 
     private Integer loglines = 0;
+    
+    private String authToken;
 
     @DataBoundConstructor
-    public Endpoint(Protocol protocol, String url, String event, Format format, Integer timeout, Integer loglines) {
+    public Endpoint(Protocol protocol, String url, String event, Format format, Integer timeout, Integer loglines, String authToken) {
         setProtocol( protocol );
         setUrl( url );
+        setAuthToken( authToken );
         setEvent( event );
         setFormat( format );
         setTimeout( timeout );
@@ -96,6 +99,14 @@ public class Endpoint {
 
     public void setLoglines(Integer loglines) {
         this.loglines = loglines;
+    }
+    
+    public String getAuthToken() {
+        return authToken;
+    }
+
+    public void setAuthToken(String authToken) {
+        this.authToken = authToken;
     }
 
     public FormValidation doCheckURL(@QueryParameter(value = "url", fixEmpty = true) String url) {

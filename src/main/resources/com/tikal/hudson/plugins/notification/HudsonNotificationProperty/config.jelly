@@ -43,6 +43,13 @@
                             </tr>
                             <tr>
                                 <td>
+                                    <f:entry title="X-Auth Token" description="X-auth token for authentication" field="authToken">
+                                        <f:textbox name="authToken" value="${endpoint.authToken}" />
+                                    </f:entry>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
                                     <f:entry title="URL" description="Where to send messages" field="url">
                                         <f:textbox name="url" value="${endpoint.url}" />
                                     </f:entry>
